@@ -1,12 +1,6 @@
 # mass-hike-api
 
-This is the base project for any [Scout](https://github.com/Scout-NU) open source JavaScript project.
-
-Every JavaScript project at Scout should start by cloning this project. This will ensure all Scout projects have the same starting point as far as code style, code of conduct, contribution guides, and npm scripts.
-
-It's also important that the README follows the structure below. New sections can be added as necessary in between API and Maintainers, but everything here (except Background) should be kept. This will ensure all Scout projects are easy to pick up and use, and that documentation is both present and clear. Everything in this document before the Code of Conduct section should be updated. Everything after those can stay the same :)
-
-Any time you change this repo, you should PR all other repos with the changes. This ensures that all projects have the latest version of this project. In the future it's probably worth looking into making this a generator so projects can update all of their configs and docs by running an npm script.
+API backend for the Mass Hike Booking platform
 
 ## Table of Contents
 
@@ -26,7 +20,9 @@ Some background information on the project. This section isn't necessary for man
 
 ## Installation
 
-How to npm install or if it requires extra setup steps. If it requires changes to configs or package.json or anything that can all go here.
+* Get the db config file from someone who has it
+* `npm install`
+* `npm run dev`
 
 ## Usage
 
