@@ -33,7 +33,6 @@
   "dependencies": {
     "body-parser": "^1.18.2",
     "eslint": "^4.16.0",
-    "@nuscout/eslint-config": "^0.2.0",
     "express": "^4.16.2",
     "husky": "^0.14.3",
     "lint-staged": "^6.1.0",
@@ -42,6 +41,7 @@
     "@nuscout/prettier-config": "^0.1.1"
   },
   "devDependencies": {
+    "@nuscout/eslint-config": "^0.2.1",
     "nodemon": "^1.14.11"
   },
   "lint-staged": {
