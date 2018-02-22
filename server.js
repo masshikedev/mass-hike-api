@@ -1,10 +1,12 @@
 const express = require('express');
+let cors = require('cors');
 const MongoClient = require('mongodb').MongoClient;
 const bodyParser = require('body-parser');
 
 const routes = require('./app/routes');
 
 const app = express();
+app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const port = process.env.PORT || 8000;
