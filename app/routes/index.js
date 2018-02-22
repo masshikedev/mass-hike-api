@@ -1,7 +1,7 @@
-const examplesRoutes = require('./examples');
+const tripRoutes = require('./trips');
 
 const routes = (app, db) => {
-  examplesRoutes(app, db);
+  tripRoutes(app, db);
 };
 
 module.exports = routes;
