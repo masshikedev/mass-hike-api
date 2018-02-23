@@ -4,7 +4,7 @@ class TripsController {
   constructor(db) {
     this.db = db;
     this.listAll = this.listAll.bind(this);
-    this.getById = this.getById.bind(this);
+    this.getByTripId = this.getByTripId.bind(this);
     this.create = this.create.bind(this);
   }
 
@@ -13,7 +13,6 @@ class TripsController {
       .collection('trips')
       .find({})
       .toArray((err, trips) => {
-        console.log(trips);
         if (err) {
           res.send({ error: 'An error has occured' });
         } else {
@@ -22,10 +21,8 @@ class TripsController {
       });
   }
 
-  // not being used until a later sprint
-  getById(req, res) {
-    const id = req.params.id;
-    const details = { _id: new ObjectID(id) };
+  getByTripId(req, res) {
+    const details = { tripId: req.params.tripId };
     this.db.collection('trips').findOne(details, (err, item) => {
       if (err) {
         res.send({ error: 'An error has occurred' });

@@ -6,7 +6,7 @@ const tripRoutes = (app, db) => {
     .route('/trips')
     .get(controller.listAll)
     .post(controller.create);
-  app.route('/trips/:id').get(controller.getById);
+  app.route('/trips/:tripId').get(controller.getByTripId);
 };
 
 module.exports = tripRoutes;
