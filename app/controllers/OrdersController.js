@@ -35,8 +35,9 @@ class OrdersController {
   }
 
   create(req, res) {
+    console.log(req.body);
     const order = buildOrder(req);
-    this.db.collection('orders').insert(trip, (err, result) => {
+    this.db.collection('orders').insert(order, (err, result) => {
       if (err) {
         res.send({ error: 'An error has occurred' });
       } else {
