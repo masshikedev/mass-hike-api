@@ -1,5 +1,3 @@
-const ObjectID = require('mongodb').ObjectID;
-
 class TripsController {
   constructor(db) {
     this.db = db;
