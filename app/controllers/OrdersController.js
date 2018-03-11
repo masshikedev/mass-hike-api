@@ -23,19 +23,34 @@ class OrdersController {
     this.create = this.create.bind(this);
   }
 
+  addTripToOrder(order, success, error) {
+    const tripDetails = { tripId: order.tripId };
+    this.db.collection('trips').findOne(tripDetails, (err, trip) => {
+      if (err) {
+        error(err);
+      } else {
+        order.trip = trip;
+        success(order);
+      }
+    });
+  }
+
   getById(req, res) {
-    const details = { _id: new ObjectID(req.params.id) };
-    this.db.collection('orders').findOne(details, (err, item) => {
+    const orderDetails = { _id: new ObjectID(req.params.id) };
+    this.db.collection('orders').findOne(orderDetails, (err, order) => {
       if (err) {
         res.send({ error: 'An error has occurred' });
       } else {
-        res.send(item);
+        this.addTripToOrder(
+          order,
+          orderWithTrip => res.send(orderWithTrip),
+          error => res.send({ error: 'An error has occured' })
+        );
       }
     });
   }
 
   create(req, res) {
-    console.log(req.body);
     const order = buildOrder(req);
     this.db.collection('orders').insert(order, (err, result) => {
       if (err) {
