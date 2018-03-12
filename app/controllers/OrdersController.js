@@ -12,6 +12,8 @@ const buildOrder = req => {
     paymentType: body.paymentType,
     cardType: body.cardType,
     cardNumber: body.cardNumber,
+    meetingLocation: body.meetingLocation,
+    meetingDate: body.meetingDate,
     tripId: body.tripId,
   };
 };
