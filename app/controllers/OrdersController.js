@@ -9,6 +9,7 @@ const buildOrder = req => {
     preferredContactMethods: body.preferredContactMethods,
     tickets: body.tickets,
     pickupLocation: body.pickupLocation,
+    selectedPrice: body.selectedPrice,
     paymentType: body.paymentType,
     cardType: body.cardType,
     cardNumber: body.cardNumber,
