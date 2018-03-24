@@ -31,33 +31,17 @@ class AuthController {
   }
 
   authenticateUser(req, res) {
-    const token = req.headers['x-access-token'];
-    if (!token) {
-      return res
-        .status(401)
-        .send({ auth: false, message: 'No token provided.' });
-    }
-
-    jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
-      if (err) {
-        return res.status(500).send({
-          auth: false,
-          message: 'Failed to authenticate token.',
-        });
-      } else {
-        const userDetails = { _id: new ObjectID(decoded.id) };
-        const fields = { password: 0 };
-        this.db
-          .collection('users')
-          .findOne(userDetails, { fields }, (err, user) => {
-            if (err) {
-              res.status(500).send({ error: 'An error has occured.' });
-            } else {
-              res.status(200).send(user);
-            }
-          });
-      }
-    });
+    const userDetails = { _id: new ObjectID(req.userId) };
+    const fields = { password: 0 };
+    this.db
+      .collection('users')
+      .findOne(userDetails, { fields }, (err, user) => {
+        if (err) {
+          res.status(500).send({ error: 'An error has occured.' });
+        } else {
+          res.status(200).send(user);
+        }
+      });
   }
 
   login(req, res) {
@@ -67,7 +51,9 @@ class AuthController {
         return res.status(500).send({ error: 'An error has occured' });
       }
       if (!user) {
-        return res.status(404).send({ error: 'No user found.' });
+        return res
+          .status(404)
+          .send({ error: 'Invalid username/password combination' });
       }
 
       const passwordIsValid = bcrypt.compareSync(

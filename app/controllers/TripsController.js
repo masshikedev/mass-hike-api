@@ -23,9 +23,9 @@ class TripsController {
     const details = { tripId: req.params.tripId };
     this.db.collection('trips').findOne(details, (err, item) => {
       if (err) {
-        res.statu(500).send({ error: 'An error has occurred' });
+        res.status(500).send({ error: 'An error has occurred' });
       } else {
-        res.statu(200).send(item);
+        res.status(200).send(item);
       }
     });
   }
