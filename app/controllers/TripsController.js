@@ -12,9 +12,9 @@ class TripsController {
       .find({})
       .toArray((err, trips) => {
         if (err) {
-          res.send({ error: 'An error has occured' });
+          res.status(500).send({ error: 'An error has occured' });
         } else {
-          res.send(trips);
+          res.status(200).send(trips);
         }
       });
   }
@@ -23,9 +23,9 @@ class TripsController {
     const details = { tripId: req.params.tripId };
     this.db.collection('trips').findOne(details, (err, item) => {
       if (err) {
-        res.send({ error: 'An error has occurred' });
+        res.statu(500).send({ error: 'An error has occurred' });
       } else {
-        res.send(item);
+        res.statu(200).send(item);
       }
     });
   }
