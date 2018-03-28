@@ -25,9 +25,9 @@ const findById = (db, id, callback) => {
   const details = { _id: new ObjectID(id) };
   db.collection(COLLECTION).findOne(details, (err, order) => {
     if (err) {
-      callback(err, order);
+      return callback(err, order);
     }
-    Trip.findByTripId(db, order.tripId, (err, trip) => {
+    Trip.findByTripId(db, order.tripId, false, (err, trip) => {
       order.trip = trip;
       callback(err, order);
     });
@@ -36,7 +36,18 @@ const findById = (db, id, callback) => {
 
 const create = (db, attributes, callback) => {
   const order = build(attributes);
-  db.collection(COLLECTION).insert(order, callback);
+  db.collection(COLLECTION).insert(order, (err, result) => {
+    if (err) {
+      return callback(err, null);
+    }
+    const order = result.ops[0];
+    Trip.addOrderToTrip(db, order, err => {
+      if (err) {
+        return callback(err, null);
+      }
+      callback(err, order);
+    });
+  });
 };
 
 module.exports = { findById, create };

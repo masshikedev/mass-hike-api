@@ -19,11 +19,11 @@ class OrdersController {
   }
 
   create(req, res) {
-    const callback = (err, result) => {
+    const callback = (err, order) => {
       if (err) {
         res.status(500).send({ error: 'An error has occurred' });
       } else {
-        res.status(200).send(result.ops[0]);
+        res.status(200).send(order);
       }
     };
     Order.create(this.db, req.body, callback);
