@@ -1,23 +1,18 @@
 const ObjectID = require('mongodb').ObjectID;
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const User = require('../models/User');
 
 class AuthController {
   constructor(db) {
     this.db = db;
     this.createUser = this.createUser.bind(this);
-    this.authenticateUser = this.authenticateUser.bind(this);
+    this.getUserById = this.getUserById.bind(this);
     this.login = this.login.bind(this);
   }
 
   createUser(req, res) {
-    const hashedPassword = bcrypt.hashSync(req.body.password, 8);
-    const user = {
-      name: req.body.name,
-      email: req.body.email,
-      password: hashedPassword,
-    };
-    this.db.collection('users').insert(user, (err, result) => {
+    const callback = (err, result) => {
       if (err) {
         res.status(500).send({ error: 'An error has occurred' });
       } else {
@@ -27,26 +22,24 @@ class AuthController {
         });
         res.status(200).send({ auth: true, token });
       }
-    });
+    };
+    User.create(this.db, req.body, callback);
   }
 
-  authenticateUser(req, res) {
-    const userDetails = { _id: new ObjectID(req.userId) };
-    const fields = { password: 0 };
-    this.db
-      .collection('users')
-      .findOne(userDetails, { fields }, (err, user) => {
-        if (err) {
-          res.status(500).send({ error: 'An error has occured.' });
-        } else {
-          res.status(200).send(user);
-        }
-      });
+  // not currently used
+  getUserById(req, res) {
+    const callback = (err, user) => {
+      if (err) {
+        res.status(500).send({ error: 'An error has occured.' });
+      } else {
+        res.status(200).send(user);
+      }
+    };
+    User.findById(this.db, req.userId, callback);
   }
 
   login(req, res) {
-    const userDetails = { email: req.body.email };
-    this.db.collection('users').findOne(userDetails, (err, user) => {
+    const callback = (err, user) => {
       if (err) {
         return res.status(500).send({ error: 'An error has occured' });
       }
@@ -69,7 +62,8 @@ class AuthController {
         expiresIn: 86400, // expires in 24 hours
       });
       res.status(200).send({ auth: true, token: token });
-    });
+    };
+    User.findByEmail(this.db, req.body.email, callback);
   }
 }
 

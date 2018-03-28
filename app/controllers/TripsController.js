@@ -1,12 +1,27 @@
+const Trip = require('../models/Trip');
+
 class TripsController {
   constructor(db) {
     this.db = db;
-    this.listAll = this.listAll.bind(this);
+    this.listUpcoming = this.listUpcoming.bind(this);
+    this.listAllWithOrders = this.listAllWithOrders.bind(this);
     this.getByTripId = this.getByTripId.bind(this);
     this.create = this.create.bind(this);
   }
 
-  listAll(req, res) {
+  listUpcoming(req, res) {
+    const query = { 'time.pickupStart': { $gte: Date.now() } };
+    const callback = (err, trips) => {
+      if (err) {
+        res.status(500).send({ error: 'An error has occured' });
+      } else {
+        res.status(200).send(trips);
+      }
+    };
+    Trip.findMultiple(this.db, query, callback);
+  }
+
+  listAllWithOrders(req, res) {
     this.db
       .collection('trips')
       .find({})
@@ -20,14 +35,14 @@ class TripsController {
   }
 
   getByTripId(req, res) {
-    const details = { tripId: req.params.tripId };
-    this.db.collection('trips').findOne(details, (err, item) => {
+    const callback = (err, item) => {
       if (err) {
         res.status(500).send({ error: 'An error has occurred' });
       } else {
         res.status(200).send(item);
       }
-    });
+    };
+    Trip.findByTripId(this.db, req.params.tripId, callback);
   }
 
   // not being used until a later sprint
