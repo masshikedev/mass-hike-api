@@ -1,4 +1,5 @@
 const Order = require('../models/Order');
+const baseCallback = require('../utils/baseCallback');
 
 class OrdersController {
   constructor(db) {
@@ -8,25 +9,11 @@ class OrdersController {
   }
 
   getById(req, res) {
-    const callback = (err, order) => {
-      if (err) {
-        res.status(500).send({ error: 'An error has occurred' });
-      } else {
-        res.status(200).send(order);
-      }
-    };
-    Order.findById(this.db, req.params.id, callback);
+    Order.findById(this.db, req.params.id, baseCallback(res));
   }
 
   create(req, res) {
-    const callback = (err, order) => {
-      if (err) {
-        res.status(500).send({ error: 'An error has occurred' });
-      } else {
-        res.status(200).send(order);
-      }
-    };
-    Order.create(this.db, req.body, callback);
+    Order.create(this.db, req.body, baseCallback(res));
   }
 }
 

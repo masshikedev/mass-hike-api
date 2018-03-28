@@ -2,6 +2,7 @@ const ObjectID = require('mongodb').ObjectID;
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const baseCallback = require('../utils/baseCallback');
 
 class AuthController {
   constructor(db) {
@@ -28,14 +29,7 @@ class AuthController {
 
   // not currently used
   getUserById(req, res) {
-    const callback = (err, user) => {
-      if (err) {
-        res.status(500).send({ error: 'An error has occured.' });
-      } else {
-        res.status(200).send(user);
-      }
-    };
-    User.findById(this.db, req.userId, callback);
+    User.findById(this.db, req.userId, baseCallback(res));
   }
 
   login(req, res) {
