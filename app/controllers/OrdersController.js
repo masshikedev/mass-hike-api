@@ -42,12 +42,12 @@ class OrdersController {
     const orderDetails = { _id: new ObjectID(req.params.id) };
     this.db.collection('orders').findOne(orderDetails, (err, order) => {
       if (err) {
-        res.send({ error: 'An error has occurred' });
+        res.status(500).send({ error: 'An error has occurred' });
       } else {
         this.addTripToOrder(
           order,
-          orderWithTrip => res.send(orderWithTrip),
-          error => res.send({ error: 'An error has occured' })
+          orderWithTrip => res.status(200).send(orderWithTrip),
+          error => res.status(500).send({ error: 'An error has occured' })
         );
       }
     });
@@ -57,9 +57,9 @@ class OrdersController {
     const order = buildOrder(req);
     this.db.collection('orders').insert(order, (err, result) => {
       if (err) {
-        res.send({ error: 'An error has occurred' });
+        res.status(500).send({ error: 'An error has occurred' });
       } else {
-        res.send(result.ops[0]);
+        res.status(200).send(result.ops[0]);
       }
     });
   }
