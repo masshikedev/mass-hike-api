@@ -7,8 +7,11 @@ const tripRoutes = (app, db) => {
   app
     .route('/admin/trips')
     .get(verifyToken, controller.listAllWithOrders)
-    .post(controller.create);
+    .post(verifyToken, controller.create);
   app.route('/trips/:tripId').get(controller.getByTripId);
+  app
+    .route('/admin/trips/:tripId')
+    .get(verifyToken, controller.getByTripIdWithOrders);
 };
 
 module.exports = tripRoutes;
