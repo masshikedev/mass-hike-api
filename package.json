@@ -32,6 +32,7 @@
   "homepage": "https://github.com/Scout-NU/mass-hike-api#readme",
   "dependencies": {
     "@nuscout/prettier-config": "^0.1.1",
+    "aws-sdk": "^2.218.1",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
