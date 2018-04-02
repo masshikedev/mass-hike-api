@@ -8,7 +8,6 @@ const verifyToken = (req, res, next) => {
 
   jwt.verify(token, process.env.JWT_KEY, (err, decoded) => {
     if (err) {
-      console.log(err);
       return res
         .status(500)
         .send({ auth: false, message: 'Failed to authenticate token.' });

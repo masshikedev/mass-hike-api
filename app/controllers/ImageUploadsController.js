@@ -1,12 +1,16 @@
-const aws = require('aws-sdk');
+const awsUrl = require('../utils/awsUrl');
 
 class ImageUploadsController {
   constructor() {
-    this.uploadToS3 = this.uploadToS3.bind(this);
+    this.getImageUrl = this.getImageUrl.bind(this);
   }
 
-  uploadToS3(req, res) {
-    const s3 = new aws.s3();
-    console.log(req);
+  getImageUrl(req, res) {
+    if (!req.file || !req.file.key) {
+      res.status(500).send({ error: 'An error has occured' });
+    }
+    res.status(200).send({ imageUrl: awsUrl(req.file.key) });
   }
 }
+
+module.exports = ImageUploadsController;
