@@ -9,10 +9,11 @@ const build = (attributes, tripId) => {
     difficulty: attributes.difficulty,
     detail: attributes.detail,
     location: attributes.location,
-    distanceAway: attributes.distanceAway,
     pricing: attributes.pricing,
+    promoCodes: attributes.promoCodes,
     stats: attributes.stats,
     cashLocations: attributes.cashLocations,
+    cashAvailability: attributes.cashAvailability,
     pickupZipcodes: attributes.pickupZipcodes,
     orders: [],
   };
@@ -47,7 +48,7 @@ const create = (db, attributes, callback) => {
     }
     const trip = build(attributes, count);
     db.collection(COLLECTION).insert(trip, (err, results) => {
-      const trip = result.ops[0];
+      const trip = results.ops[0];
       callback(err, trip);
     });
   });
