@@ -16,17 +16,8 @@ const build = (attributes, tripId) => {
     cashAvailability: attributes.cashAvailability,
     pickupZipcodes: attributes.pickupZipcodes,
     orders: [],
-    orderCount: 0,
+    ticketsSold: 0,
   };
-};
-
-const generateTripId = db => {
-  db
-    .collection(COLLECTION)
-    .find({})
-    .sort({ tripId: -1 })
-    .limit(1)
-    .toArray((err, result));
 };
 
 const findByTripId = (db, tripId, showOrders, callback) => {
@@ -47,7 +38,7 @@ const create = (db, attributes, callback) => {
     if (err) {
       return callback(err, null);
     }
-    const trip = build(attributes, count + 1);
+    const trip = build(attributes, `${count + 1}`);
     db.collection(COLLECTION).insert(trip, (err, results) => {
       const trip = results.ops[0];
       callback(err, trip);
@@ -60,7 +51,7 @@ const addOrderToTrip = (db, order, callback) => {
     .collection(COLLECTION)
     .updateOne(
       { tripId: order.tripId },
-      { $push: { orders: order }, $inc: { ticketsSold: order.tickers } },
+      { $push: { orders: order }, $inc: { ticketsSold: order.tickets } },
       callback
     );
 };

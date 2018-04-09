@@ -43,6 +43,7 @@ const create = (db, attributes, callback) => {
     const order = result.ops[0];
     Trip.addOrderToTrip(db, order, err => {
       if (err) {
+        console.log(err);
         return callback(err, null);
       }
       callback(err, order);
