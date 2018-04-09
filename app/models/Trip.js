@@ -46,7 +46,7 @@ const create = (db, attributes, callback) => {
     if (err) {
       return callback(err, null);
     }
-    const trip = build(attributes, count);
+    const trip = build(attributes, count + 1);
     db.collection(COLLECTION).insert(trip, (err, results) => {
       const trip = results.ops[0];
       callback(err, trip);
