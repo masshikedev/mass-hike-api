@@ -16,6 +16,7 @@ const build = (attributes, tripId) => {
     cashAvailability: attributes.cashAvailability,
     pickupZipcodes: attributes.pickupZipcodes,
     orders: [],
+    orderCount: 0,
   };
 };
 
@@ -59,7 +60,7 @@ const addOrderToTrip = (db, order, callback) => {
     .collection(COLLECTION)
     .updateOne(
       { tripId: order.tripId },
-      { $push: { orders: order } },
+      { $push: { orders: order }, $inc: { ticketsSold: order.tickers } },
       callback
     );
 };
