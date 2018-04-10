@@ -6,7 +6,7 @@ const authRoutes = (app, db) => {
   app
     .route('/users')
     .post(controller.createUser)
-    .get(verifyToken, controller.authenticateUser);
+    .get(verifyToken, controller.getUserById);
   app.route('/login').post(controller.login);
 };
 

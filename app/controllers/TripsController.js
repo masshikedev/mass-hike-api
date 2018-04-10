@@ -1,45 +1,35 @@
+const Trip = require('../models/Trip');
+const baseCallback = require('../utils/baseCallback');
+
 class TripsController {
   constructor(db) {
     this.db = db;
-    this.listAll = this.listAll.bind(this);
+    this.listUpcoming = this.listUpcoming.bind(this);
+    this.listAllWithOrders = this.listAllWithOrders.bind(this);
     this.getByTripId = this.getByTripId.bind(this);
+    this.getByTripIdWithOrders = this.getByTripIdWithOrders.bind(this);
     this.create = this.create.bind(this);
   }
 
-  listAll(req, res) {
-    this.db
-      .collection('trips')
-      .find({})
-      .toArray((err, trips) => {
-        if (err) {
-          res.status(500).send({ error: 'An error has occured' });
-        } else {
-          res.status(200).send(trips);
-        }
-      });
+  listUpcoming(req, res) {
+    const query = { 'time.pickupStart': { $gte: Date.now() } };
+    Trip.findMultiple(this.db, query, false, baseCallback(res));
+  }
+
+  listAllWithOrders(req, res) {
+    Trip.findMultiple(this.db, {}, true, baseCallback(res));
   }
 
   getByTripId(req, res) {
-    const details = { tripId: req.params.tripId };
-    this.db.collection('trips').findOne(details, (err, item) => {
-      if (err) {
-        res.status(500).send({ error: 'An error has occurred' });
-      } else {
-        res.status(200).send(item);
-      }
-    });
+    Trip.findByTripId(this.db, req.params.tripId, false, baseCallback(res));
   }
 
-  // not being used until a later sprint
+  getByTripIdWithOrders(req, res) {
+    Trip.findByTripId(this.db, req.params.tripId, true, baseCallback(res));
+  }
+
   create(req, res) {
-    const trip = { name: req.body.name, location: req.body.location };
-    this.db.collection('trip').insert(trip, (err, result) => {
-      if (err) {
-        res.send({ error: 'An error has occurred' });
-      } else {
-        res.send(result.ops[0]);
-      }
-    });
+    Trip.create(this.db, req.body, baseCallback(res));
   }
 }
 

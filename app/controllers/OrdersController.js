@@ -1,23 +1,5 @@
-const ObjectID = require('mongodb').ObjectID;
-
-const buildOrder = req => {
-  const { body } = req;
-  return {
-    name: body.name,
-    phone: body.phone,
-    email: body.email,
-    preferredContactMethods: body.preferredContactMethods,
-    tickets: body.tickets,
-    pickupLocation: body.pickupLocation,
-    selectedPrice: body.selectedPrice,
-    paymentType: body.paymentType,
-    cardType: body.cardType,
-    cardNumber: body.cardNumber,
-    meetingLocation: body.meetingLocation,
-    meetingDate: body.meetingDate,
-    tripId: body.tripId,
-  };
-};
+const Order = require('../models/Order');
+const baseCallback = require('../utils/baseCallback');
 
 class OrdersController {
   constructor(db) {
@@ -26,42 +8,12 @@ class OrdersController {
     this.create = this.create.bind(this);
   }
 
-  addTripToOrder(order, success, error) {
-    const tripDetails = { tripId: order.tripId };
-    this.db.collection('trips').findOne(tripDetails, (err, trip) => {
-      if (err) {
-        error(err);
-      } else {
-        order.trip = trip;
-        success(order);
-      }
-    });
-  }
-
   getById(req, res) {
-    const orderDetails = { _id: new ObjectID(req.params.id) };
-    this.db.collection('orders').findOne(orderDetails, (err, order) => {
-      if (err) {
-        res.status(500).send({ error: 'An error has occurred' });
-      } else {
-        this.addTripToOrder(
-          order,
-          orderWithTrip => res.status(200).send(orderWithTrip),
-          error => res.status(500).send({ error: 'An error has occured' })
-        );
-      }
-    });
+    Order.findById(this.db, req.params.id, baseCallback(res));
   }
 
   create(req, res) {
-    const order = buildOrder(req);
-    this.db.collection('orders').insert(order, (err, result) => {
-      if (err) {
-        res.status(500).send({ error: 'An error has occurred' });
-      } else {
-        res.status(200).send(result.ops[0]);
-      }
-    });
+    Order.create(this.db, req.body, baseCallback(res));
   }
 }
 
