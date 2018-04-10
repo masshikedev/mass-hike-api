@@ -7,6 +7,7 @@ class TripsController {
     this.listUpcoming = this.listUpcoming.bind(this);
     this.listAllWithOrders = this.listAllWithOrders.bind(this);
     this.getByTripId = this.getByTripId.bind(this);
+    this.getByTripIdWithOrders = this.getByTripIdWithOrders.bind(this);
     this.create = this.create.bind(this);
   }
 

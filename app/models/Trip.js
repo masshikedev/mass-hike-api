@@ -22,7 +22,7 @@ const build = (attributes, tripId) => {
 
 const findByTripId = (db, tripId, showOrders, callback) => {
   const fields = showOrders ? {} : { orders: 0 };
-  db.collection(COLLECTION).findOne({ tripId }, { showOrders }, callback);
+  db.collection(COLLECTION).findOne({ tripId }, { fields }, callback);
 };
 
 const findMultiple = (db, query, showOrders, callback) => {
