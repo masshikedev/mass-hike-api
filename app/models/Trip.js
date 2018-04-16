@@ -47,6 +47,18 @@ class Trip {
     });
   }
 
+  static update(db, tripId, attributes, callback) {
+    db
+      .collection(COLLECTION)
+      .findAndModify(
+        { tripId },
+        { tripId: 1 },
+        { $set: attributes },
+        { new: true },
+        callback
+      );
+  }
+
   static addOrderToTrip(db, order, callback) {
     db
       .collection(COLLECTION)
