@@ -11,7 +11,8 @@ const tripRoutes = (app, db) => {
   app.route('/trips/:tripId').get(controller.getByTripId);
   app
     .route('/admin/trips/:tripId')
-    .get(verifyToken, controller.getByTripIdWithOrders);
+    .get(verifyToken, controller.getByTripIdWithOrders)
+    .put(verifyToken, controller.update);
 };
 
 module.exports = tripRoutes;

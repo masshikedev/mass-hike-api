@@ -9,6 +9,7 @@ class TripsController {
     this.getByTripId = this.getByTripId.bind(this);
     this.getByTripIdWithOrders = this.getByTripIdWithOrders.bind(this);
     this.create = this.create.bind(this);
+    this.update = this.update.bind(this);
   }
 
   listUpcoming(req, res) {
@@ -30,6 +31,10 @@ class TripsController {
 
   create(req, res) {
     Trip.create(this.db, req.body, baseCallback(res));
+  }
+
+  update(req, res) {
+    Trip.update(this.db, req.params.tripId, req.body, baseCallback(res));
   }
 }
 
