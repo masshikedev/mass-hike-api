@@ -1,5 +1,6 @@
 const Order = require('../models/Order');
 const baseCallback = require('../utils/baseCallback');
+const stripe = require('stripe')(process.env.STRIPE_KEY);
 
 class OrdersController {
   constructor(db) {
@@ -13,7 +14,15 @@ class OrdersController {
   }
 
   create(req, res) {
-    Order.create(this.db, req.body, baseCallback(res));
+    const order = req.body;
+    Order.create(this.db, order, baseCallback(res));
+    stripe.charges.create({
+      amount: order.selectedPrice * 100 * order.tickets,
+      currency: 'usd',
+      description: 'booking platform charge',
+      statement_descriptor: 'Mass Hike tickets',
+      source: order.stripeToken.id,
+    });
   }
 }
 
