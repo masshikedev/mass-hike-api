@@ -31,7 +31,7 @@ class Member {
   static addOrderToMember(db, order, callback) {
     db
       .collection(COLLECTION)
-      .updatedOne(
+      .updateOne(
         { $or: [{ email: order.email }, { phone: order.phone }] },
         { $push: { orders: order } },
         callback
