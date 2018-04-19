@@ -30,7 +30,7 @@ class Trip {
     const fields = showOrders ? {} : { orders: 0 };
     db
       .collection(COLLECTION)
-      .find(query, { fields })
+      .find(query, { fields, sort: { 'time.hikeStart': 1 } })
       .toArray(callback);
   }
 

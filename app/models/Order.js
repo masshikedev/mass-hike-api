@@ -1,5 +1,6 @@
 const ObjectID = require('mongodb').ObjectID;
 const Trip = require('../models/Trip');
+const Member = require('../models/Member');
 
 const COLLECTION = 'orders';
 
@@ -48,6 +49,11 @@ class Order {
           return callback(err, null);
         }
         callback(err, order);
+      });
+      Member.addOrderToMember(db, order, err => {
+        if (err) {
+          console.log(err);
+        }
       });
     });
   }
