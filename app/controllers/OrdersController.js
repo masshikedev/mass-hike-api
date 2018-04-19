@@ -15,14 +15,18 @@ class OrdersController {
 
   create(req, res) {
     const order = req.body;
-    Order.create(this.db, order, baseCallback(res));
-    stripe.charges.create({
-      amount: order.selectedPrice * 100 * order.tickets,
-      currency: 'usd',
-      description: 'booking platform charge',
-      statement_descriptor: 'Mass Hike tickets',
-      source: order.stripeToken.id,
-    });
+    stripe.charges
+      .create({
+        amount: order.selectedPrice * 100 * order.tickets,
+        currency: 'usd',
+        description: 'booking platform charge',
+        statement_descriptor: 'Mass Hike tickets',
+        source: order.stripeToken.id,
+      })
+      .then(() => Order.create(this.db, order, baseCallback(res)))
+      .catch(err =>
+        res.status(err.statusCode).send({ error: 'Error processing payment' })
+      );
   }
 }
 
