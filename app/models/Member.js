@@ -1,5 +1,4 @@
 const ObjectID = require('mongodb').ObjectID;
-const COLLECTION = 'members';
 
 class Member {
   static build(attributes) {
@@ -15,31 +14,46 @@ class Member {
 
   static listAll(db, callback) {
     db
-      .collection(COLLECTION)
+      .collection('members')
       .find({})
       .toArray(callback);
   }
 
   static findById(db, id, callback) {
     const details = { _id: new ObjectID(id) };
-    db.collection(COLLECTION).findOne(details, callback);
+    db.collection('members').findOne(details, (err, member) => {
+      if (err) {
+        return callback(err, null);
+      }
+      db
+        .collection('orders')
+        .find({
+          memberId: member._id,
+        })
+        .toArray((err, orders) => {
+          if (err) {
+            return callback(err, null);
+          }
+          orders.forEach((order, i) => {
+            db
+              .collection('trips')
+              .findOne({ tripId: order.tripId }, (err, trip) => {
+                order.trip = trip;
+                if (i === orders.length - 1) {
+                  member.orders = orders;
+                  return callback(err, member);
+                }
+              });
+          });
+        });
+    });
   }
 
   static create(db, attributes, callback) {
     const member = this.build(attributes);
     db
-      .collection(COLLECTION)
+      .collection('members')
       .insert(member, (err, results) => callback(err, results.ops[0]));
-  }
-
-  static addOrderToMember(db, order, callback) {
-    db
-      .collection(COLLECTION)
-      .updateOne(
-        { $or: [{ email: order.email }, { phone: order.phone }] },
-        { $push: { orders: order } },
-        callback
-      );
   }
 }
 
