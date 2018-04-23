@@ -7,13 +7,17 @@ class Member {
       name: attributes.name,
       email: attributes.email,
       phone: attributes.phone,
+      classification: attributes.classification,
       createdAt: Date.now(),
       orders: [],
     };
   }
 
   static listAll(db, callback) {
-    db.collection(COLLECTION).find({}, callback);
+    db
+      .collection(COLLECTION)
+      .find({})
+      .toArray(callback);
   }
 
   static findById(db, id, callback) {
