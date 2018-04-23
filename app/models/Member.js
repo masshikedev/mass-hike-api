@@ -16,7 +16,27 @@ class Member {
     db
       .collection('members')
       .find({})
-      .toArray(callback);
+      .toArray((err, members) => {
+        if (err) {
+          return callback(err, null);
+        }
+        members.forEach((member, i) => {
+          db
+            .collection('orders')
+            .find({
+              memberId: member._id,
+            })
+            .toArray((err, orders) => {
+              if (err) {
+                return callback(err, null);
+              }
+              member.orders = orders;
+              if (i === members.length - 1) {
+                return callback(err, members);
+              }
+            });
+        });
+      });
   }
 
   static findById(db, id, callback) {
