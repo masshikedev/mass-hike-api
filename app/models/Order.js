@@ -40,11 +40,28 @@ class Order {
   static create(db, attributes, callback) {
     db.collection('members').findOne(
       {
-        $or: [{ email: attributes.email }, { phone: attribues.phone }],
+        $or: [{ email: attributes.email }, { phone: attributes.phone }],
       },
       (err, member) => {
         const order = this.build(attributes, member);
-        db.collection('orders').insert(order, callback);
+        db.collection('orders').insert(order, (err, result) => {
+          if (err) {
+            return callback(err, null);
+          }
+          const order = result.ops[0];
+          db
+            .collection('trips')
+            .updateOne(
+              { tripId: order.tripId },
+              { $inc: { ticketsSold: order.tickets } },
+              (err, trip) => {
+                if (err) {
+                  return callback(err, null);
+                }
+                callback(err, order);
+              }
+            );
+        });
       }
     );
   }
