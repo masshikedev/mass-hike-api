@@ -8,19 +8,19 @@ class Member {
       phone: attributes.phone,
       classification: attributes.classification,
       createdAt: Date.now(),
-      orders: [],
     };
   }
 
   static listAll(db, callback) {
     db
       .collection('members')
-      .find({})
+      .find({}, { sort: { createdAt: -1 } })
       .toArray((err, members) => {
         if (err) {
           return callback(err, null);
         }
-        members.forEach((member, i) => {
+        let complete = 0;
+        members.forEach(member => {
           db
             .collection('orders')
             .find({
@@ -31,7 +31,8 @@ class Member {
                 return callback(err, null);
               }
               member.orders = orders;
-              if (i === members.length - 1) {
+              complete++;
+              if (complete === members.length) {
                 return callback(err, members);
               }
             });
@@ -54,12 +55,17 @@ class Member {
           if (err) {
             return callback(err, null);
           }
-          orders.forEach((order, i) => {
+          if (orders.length === 0) {
+            return callback(err, member);
+          }
+          let complete = 0;
+          orders.forEach(order => {
             db
               .collection('trips')
               .findOne({ tripId: order.tripId }, (err, trip) => {
                 order.trip = trip;
-                if (i === orders.length - 1) {
+                complete++;
+                if (complete === orders.length) {
                   member.orders = orders;
                   return callback(err, member);
                 }

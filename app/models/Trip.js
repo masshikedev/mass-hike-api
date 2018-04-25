@@ -48,13 +48,15 @@ class Trip {
         if (!includeOrders) {
           return callback(err, trips);
         }
-        trips.forEach((trip, i) => {
+        let complete = 0;
+        trips.forEach(trip => {
           db
             .collection('orders')
             .find({ tripId: trip.tripId })
             .toArray((err, orders) => {
               trip.orders = orders;
-              if (i === trips.length - 1) {
+              complete++;
+              if (complete === trips.length) {
                 return callback(err, trips);
               }
             });
