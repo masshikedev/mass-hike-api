@@ -49,7 +49,11 @@ class AuthController {
       );
 
       if (!passwordIsValid) {
-        return res.status(401).send({ auth: false, token: null });
+        return res.status(401).send({
+          auth: false,
+          token: null,
+          error: 'Invalid username/password combination',
+        });
       }
 
       const token = jwt.sign({ id: user._id }, process.env.JWT_KEY, {

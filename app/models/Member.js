@@ -55,8 +55,8 @@ class Member {
           if (err) {
             return callback(err, null);
           }
+          member.orders = orders;
           if (orders.length === 0) {
-            member.orders = [];
             return callback(err, member);
           }
           let complete = 0;
