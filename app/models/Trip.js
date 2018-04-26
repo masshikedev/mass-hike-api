@@ -1,5 +1,3 @@
-const COLLECTION = 'trips';
-
 class Trip {
   static build(attributes, tripId) {
     return {
@@ -21,50 +19,72 @@ class Trip {
     };
   }
 
-  static findByTripId(db, tripId, showOrders, callback) {
-    const fields = showOrders ? {} : { orders: 0 };
-    db.collection(COLLECTION).findOne({ tripId }, { fields }, callback);
+  static findByTripId(db, tripId, includeOrders, callback) {
+    db.collection('trips').findOne({ tripId }, (err, trip) => {
+      if (err) {
+        return callback(err, null);
+      }
+      if (!includeOrders) {
+        return callback(err, trip);
+      }
+      db
+        .collection('orders')
+        .find({ tripId: trip.tripId })
+        .toArray((err, orders) => {
+          trip.orders = orders;
+          return callback(err, trip);
+        });
+    });
   }
 
-  static findMultiple(db, query, showOrders, callback) {
-    const fields = showOrders ? {} : { orders: 0 };
+  static findMultiple(db, query, includeOrders, callback) {
     db
-      .collection(COLLECTION)
-      .find(query, { fields })
-      .toArray(callback);
+      .collection('trips')
+      .find(query, { sort: { 'time.hikeStart': 1 } })
+      .toArray((err, trips) => {
+        if (err) {
+          return callback(err, null);
+        }
+        if (!includeOrders) {
+          return callback(err, trips);
+        }
+        let complete = 0;
+        trips.forEach(trip => {
+          db
+            .collection('orders')
+            .find({ tripId: trip.tripId })
+            .toArray((err, orders) => {
+              trip.orders = orders;
+              complete++;
+              if (complete === trips.length) {
+                return callback(err, trips);
+              }
+            });
+        });
+      });
   }
 
   static create(db, attributes, callback) {
-    db.collection(COLLECTION).count((err, count) => {
+    db.collection('trips').count((err, count) => {
       if (err) {
         return callback(err, null);
       }
       const trip = this.build(attributes, `${count + 1}`);
-      db.collection(COLLECTION).insert(trip, (err, results) => {
+      db.collection('trips').insert(trip, (err, results) => {
         const trip = results.ops[0];
-        callback(err, trip);
+        return callback(err, trip);
       });
     });
   }
 
   static update(db, tripId, attributes, callback) {
     db
-      .collection(COLLECTION)
+      .collection('trips')
       .findAndModify(
         { tripId },
         { tripId: 1 },
         { $set: attributes },
         { new: true },
-        callback
-      );
-  }
-
-  static addOrderToTrip(db, order, callback) {
-    db
-      .collection(COLLECTION)
-      .updateOne(
-        { tripId: order.tripId },
-        { $push: { orders: order }, $inc: { ticketsSold: order.tickets } },
         callback
       );
   }

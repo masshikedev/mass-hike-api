@@ -25,7 +25,9 @@ class OrdersController {
       })
       .then(() => Order.create(this.db, order, baseCallback(res)))
       .catch(err =>
-        res.status(err.statusCode).send({ error: 'Error processing payment' })
+        res
+          .status(err.statusCode || 500)
+          .send({ error: 'Error processing payment' })
       );
   }
 }
