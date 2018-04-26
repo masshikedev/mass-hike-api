@@ -7,6 +7,7 @@ class MembersController {
     this.create = this.create.bind(this);
     this.listAll = this.listAll.bind(this);
     this.getById = this.getById.bind(this);
+    this.update = this.update.bind(this);
   }
 
   create(req, res) {
@@ -19,6 +20,10 @@ class MembersController {
 
   getById(req, res) {
     Member.findById(this.db, req.params.id, baseCallback(res));
+  }
+
+  update(req, res) {
+    Member.update(this.db, req.params.id, req.body, baseCallback(res));
   }
 }
 

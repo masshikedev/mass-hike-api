@@ -7,7 +7,10 @@ const memberRoutes = (app, db) => {
     .route('/members')
     .post(controller.create)
     .get(verifyToken, controller.listAll);
-  app.route('/members/:id').get(verifyToken, controller.getById);
+  app
+    .route('/members/:id')
+    .get(verifyToken, controller.getById)
+    .put(verifyToken, controller.update);
 };
 
 module.exports = memberRoutes;

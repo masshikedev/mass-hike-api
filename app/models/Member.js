@@ -56,6 +56,7 @@ class Member {
             return callback(err, null);
           }
           if (orders.length === 0) {
+            member.orders = [];
             return callback(err, member);
           }
           let complete = 0;
@@ -80,6 +81,18 @@ class Member {
     db
       .collection('members')
       .insert(member, (err, results) => callback(err, results.ops[0]));
+  }
+
+  static update(db, id, attributes, callback) {
+    db
+      .collection('members')
+      .findAndModify(
+        { _id: new ObjectID(id) },
+        { _id: 1 },
+        { $set: attributes },
+        { new: true },
+        callback
+      );
   }
 }
 
