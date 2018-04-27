@@ -29,11 +29,14 @@ class OrdersController {
       .create({
         amount: order.selectedPrice * 100 * order.tickets,
         currency: 'usd',
-        description: 'booking platform charge',
+        description: `Mass Hike order - ${order.name} for trip ${order.tripId}`,
         statement_descriptor: 'Mass Hike tickets',
         source: order.stripeToken.id,
       })
-      .then(() => Order.create(this.db, order, baseCallback(res)))
+      .then(charge => {
+        order.stripeChargeId = charge.id;
+        Order.create(this.db, order, baseCallback(res));
+      })
       .catch(err =>
         res
           .status(err.statusCode || 500)
@@ -42,6 +45,9 @@ class OrdersController {
   }
 
   update(req, res) {
+    if (req.body.cancelled) {
+      return Order.cancel(this.db, req.params.id, baseCallback(res));
+    }
     Order.update(this.db, req.params.id, req.body, baseCallback(res));
   }
 }
