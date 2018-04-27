@@ -12,10 +12,12 @@ class Order {
       pickupLocation: attributes.pickupLocation,
       selectedPrice: attributes.selectedPrice,
       paymentType: attributes.paymentType,
-      cardType: attributes.stripeToken.card.brand,
-      cardNumber: attributes.stripeToken.card.last4,
+      cardType: attributes.stripeToken && attributes.stripeToken.card.brand,
+      cardNumber: attributes.stripeToken && attributes.stripeToken.card.last4,
       meetingLocation: attributes.meetingLocation,
       meetingDate: attributes.meetingDate,
+      paid: attributes.paymentType === 'card',
+      cancelled: false,
       tripId: attributes.tripId,
       memberId: member && member._id,
     };
@@ -35,6 +37,13 @@ class Order {
         callback(err, order);
       });
     });
+  }
+
+  static listUnpaid(db, callback) {
+    db
+      .collection('orders')
+      .find({ paid: false })
+      .toArray(callback);
   }
 
   static create(db, attributes, callback) {
@@ -64,6 +73,39 @@ class Order {
         });
       }
     );
+  }
+
+  static update(db, id, attributes, callback) {
+    db
+      .collection('orders')
+      .findAndModify(
+        { _id: new ObjectID(id) },
+        { _id: 1 },
+        { $set: attributes },
+        { new: true },
+        (err, results) => {
+          if (err) {
+            return callback(err, null);
+          }
+          const order = results.value;
+          if (order.cancelled) {
+            db
+              .collection('trips')
+              .updateOne(
+                { tripId: order.tripId },
+                { $inc: { ticketsSold: -order.tickets } },
+                (err, trip) => {
+                  if (err) {
+                    return callback(err, null);
+                  }
+                  callback(err, order);
+                }
+              );
+          } else {
+            return callback(err, order);
+          }
+        }
+      );
   }
 }
 

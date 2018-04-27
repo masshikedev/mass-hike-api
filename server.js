@@ -13,10 +13,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const port = process.env.PORT || 8000;
 
 MongoClient.connect(process.env.DB_URL, (err, database) => {
-  const db = database.db(process.env.DB_NAME);
   if (err) {
     return console.log(err);
   }
+  const db = database.db(process.env.DB_NAME);
   routes(app, db);
   app.listen(port, () => {
     console.log('Up and running on localhost:' + port);
