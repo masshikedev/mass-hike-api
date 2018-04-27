@@ -13,7 +13,10 @@ class TripsController {
   }
 
   listUpcoming(req, res) {
-    const query = { 'time.pickupStart': { $gte: Date.now() } };
+    const query = {
+      'time.pickupStart': { $gte: Date.now() },
+      cancelled: false,
+    };
     Trip.findMultiple(this.db, query, false, baseCallback(res));
   }
 

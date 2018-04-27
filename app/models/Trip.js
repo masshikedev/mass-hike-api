@@ -16,6 +16,7 @@ class Trip {
       pickupZipcodes: attributes.pickupZipcodes,
       orders: [],
       ticketsSold: 0,
+      cancelled: false,
     };
   }
 
