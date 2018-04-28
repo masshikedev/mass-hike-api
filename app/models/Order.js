@@ -49,7 +49,26 @@ class Order {
     db
       .collection('orders')
       .find({ paid: false })
-      .toArray(callback);
+      .toArray((err, orders) => {
+        if (err) {
+          return callback(err, null);
+        }
+        let completed = 0;
+        orders.forEach(order => {
+          db
+            .collection('trips')
+            .findOne({ tripId: order.tripId }, (err, trip) => {
+              if (err) {
+                return callback(err, null);
+              }
+              order.trip = trip;
+              completed++;
+              if (completed === orders.length) {
+                return callback(err, orders);
+              }
+            });
+        });
+      });
   }
 
   static create(db, attributes, callback) {

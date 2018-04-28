@@ -16,7 +16,6 @@ class OrdersController {
   }
 
   listUnpaid(req, res) {
-    console.log('list unpaid');
     Order.listUnpaid(this.db, baseCallback(res));
   }
 
