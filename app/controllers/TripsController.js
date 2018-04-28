@@ -37,6 +37,9 @@ class TripsController {
   }
 
   update(req, res) {
+    if (req.body.cancelled) {
+      Trip.cancel(this.db, req.params.tripId, baseCallback(res));
+    }
     Trip.update(this.db, req.params.tripId, req.body, baseCallback(res));
   }
 }

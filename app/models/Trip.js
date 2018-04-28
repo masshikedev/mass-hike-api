@@ -1,3 +1,5 @@
+const stripe = require('stripe')(process.env.STRIPE_KEY);
+
 class Trip {
   static build(attributes, tripId) {
     return {
@@ -88,6 +90,38 @@ class Trip {
         { new: true },
         callback
       );
+  }
+
+  static cancel(db, tripId, callback) {
+    db
+      .collection('orders')
+      .find({ tripId })
+      .toArray((err, orders) => {
+        const ordersToRefund = orders.filter(
+          order => order.paymentType === 'card'
+        );
+        let completed = 0;
+        ordersToRefund.forEach(order => {
+          stripe.refunds
+            .create({
+              charge: order.stripeChargeId,
+            })
+            .then(() => {
+              completed++;
+              if (completed === ordersToRefund.length) {
+                db
+                  .collection('trips')
+                  .findAndModify(
+                    { tripId },
+                    { tripId: 1 },
+                    { $set: { cancelled: true } },
+                    { new: true },
+                    callback
+                  );
+              }
+            });
+        });
+      });
   }
 }
 
