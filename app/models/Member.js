@@ -78,9 +78,9 @@ class Member {
 
   static create(db, attributes, callback) {
     const member = this.build(attributes);
-    db
-      .collection('members')
-      .insert(member, (err, results) => callback(err, results.ops[0]));
+    db.collection('members').insert(member, (err, results) => {
+      callback(err, results.ops[0]);
+    });
   }
 
   static update(db, id, attributes, callback) {
