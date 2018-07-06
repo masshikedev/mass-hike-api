@@ -18,12 +18,18 @@ class DonationsController {
         source: donation.stripeToken.id,
       })
       .then(() => {
-        res.status(200).send('OK');
+        res.status(200).send({
+          amount: donation.amount,
+          cardType: order.stripeToken.card.brand,
+          cardNumber: order.stripeToken.card.last4,
+        });
       })
-      .catch(err =>
+      .catch(err => {
         res
           .status(err.statusCode || 500)
-          .send({ error: 'Error processing donation' })
-      );
+          .send({ error: 'Error processing donation' });
+      });
   }
 }
+
+module.exports = DonationsController;
