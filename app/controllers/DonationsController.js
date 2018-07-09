@@ -20,8 +20,8 @@ class DonationsController {
       .then(() => {
         res.status(200).send({
           amount: donation.amount,
-          cardType: order.stripeToken.card.brand,
-          cardNumber: order.stripeToken.card.last4,
+          cardType: donation.stripeToken.card.brand,
+          cardNumber: donation.stripeToken.card.last4,
         });
       })
       .catch(err => {
