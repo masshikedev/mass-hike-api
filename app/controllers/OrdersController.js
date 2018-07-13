@@ -1,10 +1,12 @@
 const Order = require('../models/Order');
+const OrdersMailer = require('../mailers/OrdersMailer');
 const baseCallback = require('../utils/baseCallback');
 const stripe = require('stripe')(process.env.STRIPE_KEY);
 
 class OrdersController {
   constructor(db) {
     this.db = db;
+    this.mailer = new OrdersMailer();
     this.getById = this.getById.bind(this);
     this.listUnpaid = this.listUnpaid.bind(this);
     this.create = this.create.bind(this);
@@ -22,6 +24,7 @@ class OrdersController {
   create(req, res) {
     const order = req.body;
     if (order.paymentType === 'cash') {
+      this.mailer.sendConfirmation(order);
       return Order.create(this.db, order, baseCallback(res));
     }
     stripe.charges
@@ -33,14 +36,14 @@ class OrdersController {
         source: order.stripeToken.id,
       })
       .then(charge => {
+        this.mailer.sendConfirmation(order);
         order.stripeChargeId = charge.id;
         Order.create(this.db, order, baseCallback(res));
       })
-      .catch(err =>
-        res
-          .status(err.statusCode || 500)
-          .send({ error: 'Error processing payment' })
-      );
+      .catch(err => {
+        console.log(err);
+        res.status(err.statusCode || 500).send({ error: err });
+      });
   }
 
   update(req, res) {
