@@ -15,7 +15,7 @@ class OrdersMailer {
       from:
         'Mass Hike <masshike@sandboxe20e5376e0e248fc9b74effbe142da11.mailgun.org>',
       to: order.email,
-      subject: 'Thank you for your purchase!',
+      subject: `Thank you for your purchase! Order number ${order._id}`,
       html: orderConfirmation(order),
     };
     mailgun.messages().send(data, (error, body) => {

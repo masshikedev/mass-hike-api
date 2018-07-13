@@ -1,9 +1,7 @@
-const baseCallback = require('../utils/baseCallback');
 const stripe = require('stripe')(process.env.STRIPE_KEY);
 
 class DonationsController {
-  constructor(db) {
-    this.db = db;
+  constructor() {
     this.create = this.create.bind(this);
   }
 
