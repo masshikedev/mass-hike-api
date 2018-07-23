@@ -19,6 +19,9 @@ class Member {
         if (err) {
           return callback(err, null);
         }
+        if (members.length === 0) {
+          return callback(err, members);
+        }
         let complete = 0;
         members.forEach(member => {
           db

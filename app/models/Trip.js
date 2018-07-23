@@ -48,7 +48,7 @@ class Trip {
         if (err) {
           return callback(err, null);
         }
-        if (!includeOrders) {
+        if (!includeOrders || trips.length === 0) {
           return callback(err, trips);
         }
         let complete = 0;

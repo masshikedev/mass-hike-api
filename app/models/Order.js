@@ -53,6 +53,9 @@ class Order {
         if (err) {
           return callback(err, null);
         }
+        if (orders.length === 0) {
+          return callback(err, orders);
+        }
         let completed = 0;
         orders.forEach(order => {
           db
