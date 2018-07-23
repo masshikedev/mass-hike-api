@@ -36,7 +36,9 @@ class OrdersController {
         source: order.stripeToken.id,
       })
       .then(charge => {
-        this.mailer.sendConfirmation(order);
+        if (order.preferredContactMethods.includes('email')) {
+          this.mailer.sendConfirmation(order);
+        }
         order.stripeChargeId = charge.id;
         Order.create(this.db, order, baseCallback(res));
       })
