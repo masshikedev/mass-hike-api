@@ -10,13 +10,12 @@ class OrdersMailer {
     this.sendConfirmation = this.sendConfirmation.bind(this);
   }
 
-  sendConfirmation(order) {
+  sendConfirmation(order, id) {
     const data = {
-      from:
-        'Mass Hike <masshike@sandboxe20e5376e0e248fc9b74effbe142da11.mailgun.org>',
+      from: 'Mass Hike <info@masshike.org>',
       to: order.email,
-      subject: `Thank you for your purchase! Order number ${order._id}`,
-      html: orderConfirmation(order),
+      subject: `Thank you for your purchase! Order number ${id}`,
+      html: orderConfirmation(order, id),
     };
     mailgun.messages().send(data, (error, body) => {
       console.log('body: ', body);

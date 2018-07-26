@@ -36,11 +36,17 @@ class OrdersController {
         source: order.stripeToken.id,
       })
       .then(charge => {
-        if (order.preferredContactMethods.includes('email')) {
-          this.mailer.sendConfirmation(order);
-        }
         order.stripeChargeId = charge.id;
-        Order.create(this.db, order, baseCallback(res));
+        Order.create(this.db, order, (err, item) => {
+          if (order.preferredContactMethods.includes('email')) {
+            this.mailer.sendConfirmation(order, item._id);
+          }
+          if (err) {
+            res.status(500).send({ error: 'An error has occured' });
+          } else {
+            res.status(200).send(item);
+          }
+        });
       })
       .catch(err => {
         console.log(err);

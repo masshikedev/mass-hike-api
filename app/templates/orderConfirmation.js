@@ -1,6 +1,6 @@
 const moment = require('moment');
 
-const orderConfirmation = order => {
+const orderConfirmation = (order, id) => {
   const { trip } = order;
   const paymentSection =
     order.paymentType === 'card'
@@ -16,7 +16,7 @@ const orderConfirmation = order => {
       <h1>You're going to Blue Hills!</h1>
       <p>We’re so excited that you want to take a hike with us! Until then, take a look at our suggested packing list and our FAQs. We’ll see you soon!</p>
       <h2>Order Summary</h2>
-      <p>Order number ${order._id}</p>
+      <p>Order number ${id}</p>
       <h3>Trip Summary</h3>
       <p>
         ${trip.name}
