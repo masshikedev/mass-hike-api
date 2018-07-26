@@ -12,7 +12,7 @@ class OrdersMailer {
 
   sendConfirmation(order, id) {
     const data = {
-      from: 'Mass Hike <info@masshike.org>',
+      from: 'Mass Hike <info@mg.masshike.org>',
       to: order.email,
       subject: `Thank you for your purchase! Order number ${id}`,
       html: orderConfirmation(order, id),

@@ -12,7 +12,7 @@ class ContactMailer {
 
   sendMessage(message, callback) {
     const data = {
-      from: 'Mass Hike contact@masshike.org',
+      from: 'Mass Hike contact@mg.masshike.org',
       to: 'masshikedev@gmail.com',
       subject: `New message from ${message.name} via Masshike.org contact form`,
       html: contactMessage(message),
