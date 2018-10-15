@@ -4,6 +4,7 @@ const mailgun = require('mailgun-js')({
 });
 
 const orderConfirmation = require('../templates/orderConfirmation');
+const notificationMessage = require('../templates/notificationMessage');
 
 class OrdersMailer {
   constructor() {
@@ -16,6 +17,20 @@ class OrdersMailer {
       to: order.email,
       subject: `Thank you for your purchase! Order number ${id}`,
       html: orderConfirmation(order, id),
+    };
+    mailgun.messages().send(data, (error, body) => {
+      console.log('body: ', body);
+      console.log('error: ', error);
+    });
+  }
+
+  sendNotificationToMassHike(order, id) {
+    const { trip } = order;
+    const data = {
+      from: 'Mass Hike <info@mg.masshike.org>',
+      to: 'info@masshike.org, sfoster@masshike.org',
+      subject: `New ticket purchase for ${trip.name}`,
+      html: notificationMessage(order, id),
     };
     mailgun.messages().send(data, (error, body) => {
       console.log('body: ', body);

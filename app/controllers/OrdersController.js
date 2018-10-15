@@ -40,6 +40,7 @@ class OrdersController {
         Order.create(this.db, order, (err, item) => {
           if (order.preferredContactMethods.includes('email')) {
             this.mailer.sendConfirmation(order, item._id);
+            this.mailer.sendNotificationToMassHike(order, item._id);
           }
           if (err) {
             res.status(500).send({ error: 'An error has occured' });
